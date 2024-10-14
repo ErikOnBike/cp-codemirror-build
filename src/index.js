@@ -89,8 +89,9 @@ const customCssCompletions = cssLanguage.data.of({
 });
 
 // Export two functions to open up an editor
-window["cpOpenHtmlEditorIn:"] = function(element) {
-	return new EditorView({
+window["cpOpenHtmlEditorIn:on:"] = function(element, doc) {
+	const editor = new EditorView({
+		doc: doc,
 		extensions: [
 			basicSetup,
 			keymap.of([ indentWithTab ]),
@@ -98,12 +99,19 @@ window["cpOpenHtmlEditorIn:"] = function(element) {
 			customHtmlCompletions,
 			html()
 		],
-		parent: element
+		parent: element,
+		root: element.getRootNode()
 	});
+	let cleanDoc = editor.state.doc;
+	editor.isDirty = function() {
+		return !cleanDoc.eq(this.state.doc);
+	};
+	return editor;
 };
 
-window["cpOpenCssEditorIn:"] = function(element) {
-	return new EditorView({
+window["cpOpenCssEditorIn:on:"] = function(element, doc) {
+	const editor = new EditorView({
+		doc: doc,
 		extensions: [
 			basicSetup,
 			keymap.of([ indentWithTab ]),
@@ -111,8 +119,14 @@ window["cpOpenCssEditorIn:"] = function(element) {
 			customCssCompletions,
 			css()
 		],
-		parent: element
+		parent: element,
+		root: element.getRootNode()
 	});
+	let cleanDoc = editor.state.doc;
+	editor.isDirty = function() {
+		return !cleanDoc.eq(this.state.doc);
+	};
+	return editor;
 };
 
 // Export function to set the well known HTML tags
