@@ -108,13 +108,25 @@ function createEditor(element, doc, language, completions) {
 	return editor;
 }
 
-// Export two functions to open up an editor
-window["cpOpenHtmlEditorIn:on:"] = function(element, doc) {
-	return createEditor(element, doc, html, customHtmlCompletions);
+const languageDefinitions = {
+	"html": {
+		language: html,
+		completions: customHtmlCompletions
+	},
+	"css": {
+		language: css,
+		completions: customCssCompletions
+	}
 };
 
-window["cpOpenCssEditorIn:on:"] = function(element, doc) {
-	return createEditor(element, doc, css, customCssCompletions);
+// Export function to open up an editor
+window["cpOpenEditorIn:on:language:"] = function(element, doc, lang) {
+	const languageDef = languageDefinitions[lang];
+	if(!languageDef) {
+		console.error("Unknown language: " + lang);
+		return;
+	}
+	return createEditor(element, doc, languageDef.language, languageDef.completions);
 };
 
 // Export function to set the well known HTML tags
