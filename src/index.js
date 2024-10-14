@@ -89,7 +89,7 @@ const customCssCompletions = cssLanguage.data.of({
 });
 
 // Export two functions to open up an editor
-window["cpOpenHtmlEditorOn:"] = function(element) {
+window["cpOpenHtmlEditorIn:"] = function(element) {
 	return new EditorView({
 		extensions: [
 			basicSetup,
@@ -102,7 +102,7 @@ window["cpOpenHtmlEditorOn:"] = function(element) {
 	});
 };
 
-window["cpOpenCssEditorOn:"] = function(element) {
+window["cpOpenCssEditorIn:"] = function(element) {
 	return new EditorView({
 		extensions: [
 			basicSetup,
