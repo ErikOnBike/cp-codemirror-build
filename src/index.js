@@ -88,16 +88,15 @@ const customCssCompletions = cssLanguage.data.of({
 	autocomplete: cssContextCompletions
 });
 
-// Export two functions to open up an editor
-window["cpOpenHtmlEditorIn:on:"] = function(element, doc) {
+function createEditor(element, doc, language, completions) {
 	const editor = new EditorView({
 		doc: doc,
 		extensions: [
 			basicSetup,
 			keymap.of([ indentWithTab ]),
 			indentUnit.of("\t"),
-			customHtmlCompletions,
-			html()
+			completions,
+			language()
 		],
 		parent: element,
 		root: element.getRootNode()
@@ -107,26 +106,15 @@ window["cpOpenHtmlEditorIn:on:"] = function(element, doc) {
 		return !cleanDoc.eq(this.state.doc);
 	};
 	return editor;
+}
+
+// Export two functions to open up an editor
+window["cpOpenHtmlEditorIn:on:"] = function(element, doc) {
+	return createEditor(element, doc, html, customHtmlCompletions);
 };
 
 window["cpOpenCssEditorIn:on:"] = function(element, doc) {
-	const editor = new EditorView({
-		doc: doc,
-		extensions: [
-			basicSetup,
-			keymap.of([ indentWithTab ]),
-			indentUnit.of("\t"),
-			customCssCompletions,
-			css()
-		],
-		parent: element,
-		root: element.getRootNode()
-	});
-	let cleanDoc = editor.state.doc;
-	editor.isDirty = function() {
-		return !cleanDoc.eq(this.state.doc);
-	};
-	return editor;
+	return createEditor(element, doc, css, customCssCompletions);
 };
 
 // Export function to set the well known HTML tags
