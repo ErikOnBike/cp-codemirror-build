@@ -1,4 +1,5 @@
 import { basicSetup } from "codemirror";
+import { EditorState } from "@codemirror/state";
 import { EditorView, keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { indentUnit } from "@codemirror/language";
@@ -88,8 +89,8 @@ const customCssCompletions = cssLanguage.data.of({
 	autocomplete: cssContextCompletions
 });
 
-function createEditor(element, doc, language, completions) {
-	const editor = new EditorView({
+function createState(doc, language, completions) {
+	return EditorState.create({
 		doc: doc,
 		extensions: [
 			basicSetup,
@@ -97,14 +98,26 @@ function createEditor(element, doc, language, completions) {
 			indentUnit.of("\t"),
 			completions,
 			language()
-		],
+		]
+	});
+}
+
+function createEditor(element, doc, language, completions) {
+	const editor = new EditorView({
+		...createState(doc, language, completions),
 		parent: element,
 		root: element.getRootNode()
 	});
+
+	// Add convenience methods to the Editor
 	let cleanDoc = editor.state.doc;
 	editor.isDirty = function() {
 		return !cleanDoc.eq(this.state.doc);
 	};
+	editor.revert = function() {
+		this.setState(createState(cleanDoc, language, completions));
+	};
+
 	return editor;
 }
 
