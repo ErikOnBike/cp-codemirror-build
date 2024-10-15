@@ -89,8 +89,8 @@ const customCssCompletions = cssLanguage.data.of({
 	autocomplete: cssContextCompletions
 });
 
-function createState(doc, language, completions) {
-	return EditorState.create({
+function createStateConfig(doc, language, completions) {
+	return {
 		doc: doc,
 		extensions: [
 			basicSetup,
@@ -99,12 +99,16 @@ function createState(doc, language, completions) {
 			completions,
 			language()
 		]
-	});
+	};
+}
+
+function createState(doc, language, completions) {
+	return EditorState.create(createStateConfig(doc, language, completions));
 }
 
 function createEditor(element, doc, language, completions) {
 	const editor = new EditorView({
-		...createState(doc, language, completions),
+		...createStateConfig(doc, language, completions),
 		parent: element,
 		root: element.getRootNode()
 	});
