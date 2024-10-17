@@ -121,6 +121,9 @@ function createEditor(element, doc, language, completions) {
 	editor.revert = function() {
 		this.setState(createState(cleanDoc, language, completions));
 	};
+	editor.markClean = function() {
+		cleanDoc = editor.state.doc;
+	};
 
 	return editor;
 }
